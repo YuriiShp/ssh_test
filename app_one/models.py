@@ -31,6 +31,11 @@ class Album(models.Model):
     songs = models.ManyToManyField(Song, blank=True)
     release_date = models.DateField(blank=True, null=True)
 
+    def save(self,**kwargs):
+        for song in self.songs.all():
+            self.genres.add(song.genre.id)
+        super(Album, self).save(**kwargs)
+
     def __str__(self):
         return str(self.name) + ' by ' + str(self.author)
 
