@@ -2,6 +2,11 @@ from django.db import models
 from django.utils import timezone
 
 # Create your models here.
+class Genre(models.Model):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
 
 
 class Author(models.Model):
@@ -11,22 +16,24 @@ class Author(models.Model):
         return self.name
 
 
+class Song(models.Model):
+    name = models.CharField(max_length=200)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class Album(models.Model):
     name = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    genre = models.CharField(max_length=200)
+    genres = models.ManyToManyField(Genre, blank=True)
+    songs = models.ManyToManyField(Song, blank=True)
     release_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return str(self.name) + ' by ' + str(self.author)
 
-
-class Song(models.Model):
-    name = models.CharField(max_length=200)
-    album = models.ForeignKey(Album, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
 
 
 class PlayList(models.Model):
